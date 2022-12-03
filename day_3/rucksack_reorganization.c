@@ -1,21 +1,24 @@
 // problem: https://adventofcode.com/2022/day/3
 
 #include <stdio.h>
+#include <string.h>
 
 #define LINE_LIMIT 100
 
 int get_line(char line[], int limit);
 int get_item_priority(char item);
-int get_common_item_priority(char compartment1[], char compartment2[],
-        int length);
+int get_common_item_priority(char line1[], char line2[], char line3[]);
 
 int main() {
-    int length, res = 0;
-    char line[LINE_LIMIT];
+    int i = 0, length, res = 0;
+    char line[LINE_LIMIT] = {'\0'}, rucksacks[3][LINE_LIMIT] = {'\0'};
     while ((length = get_line(line, LINE_LIMIT)) > 0) {
-        char *compartment1 = line;
-        char *compartment2 = line + length / 2;
-        res += get_common_item_priority(compartment1, compartment2, length / 2);
+        strcpy(rucksacks[i], line);
+        i++;
+        if (i == 3) {
+            res += get_common_item_priority(rucksacks[0], rucksacks[1], rucksacks[2]);
+            i = 0;
+        }
     }
     printf("%d\n", res);
     return 0;
@@ -43,24 +46,26 @@ int get_item_priority(char item) {
     return 0;
 }
 
-// returns last occuring common item's priority given two character lists, of
-// the same length
-int get_common_item_priority(char compartment1[], char compartment2[],
-        int length) {
+int get_common_item_priority(char line1[], char line2[], char line3[]) {
     int i, index, common_item_priority = 0;
-    char c, occurance[52][2] = {'\0'};
-    for (i = 0; i < length; i++) {
-        c = compartment1[i];
+    char c, occurance[52][3] = {'\0'};
+    for (i = 0; i < strlen(line1); i++) {
+        c = line1[i];
         index = get_item_priority(c) - 1;
         occurance[index][0] = 1;
     }
-    for (i = 0; i < length; i++) {
-        c = compartment2[i];
+    for (i = 0; i < strlen(line2); i++) {
+        c = line2[i];
         index = get_item_priority(c) - 1;
         occurance[index][1] = 1;
     }
+    for (i = 0; i < strlen(line3); i++) {
+        c = line3[i];
+        index = get_item_priority(c) - 1;
+        occurance[index][2] = 1;
+    }
     for (i = 0; i < 52; i++) {
-        if (occurance[i][0] == 1 && occurance[i][1] == 1)
+        if (occurance[i][0] == 1 && occurance[i][1] == 1 && occurance[i][2] == 1)
             common_item_priority = i + 1;
     }
     return common_item_priority;
