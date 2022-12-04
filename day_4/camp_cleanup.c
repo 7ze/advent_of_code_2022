@@ -8,6 +8,7 @@
 
 int get_line(char line[], int limit);
 int contains_range(int list[2][2]);
+int does_overlap(int list[2][2]);
 
 int main() {
     int assignments[2][2] = {0}, counter = 0;
@@ -21,11 +22,19 @@ int main() {
             assignment = strtok(NULL, "-");
             assignments[i][1] = atoi(assignment);
         }
-        if(contains_range(assignments))
+        if (does_overlap(assignments))
             ++counter;
     }
     printf("%d\n", counter);
     return 0;
+}
+
+int does_overlap(int list[2][2]) {
+    if ((list[1][0] >= list[0][0] && list[1][0] <= list[0][1]) ||
+            (list[0][0] >= list[1][0] && list[0][0] <= list[1][1]))
+        return 1;
+    else
+        return 0;
 }
 
 int contains_range(int list[2][2]) {
